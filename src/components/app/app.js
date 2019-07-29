@@ -5,10 +5,10 @@ import RandomPlanet from '../random-planet';
 import ErrorButton from '../error-button';
 import ErrorIndicator from '../error-indicator';
 import PeoplePage from '../people-page';
+import Row from '../row';
+import PersonDetails, { Record } from '../item-details/item-details';
 
 import './app.css';
-import ItemList from "../item-list/item-list";
-import PersonDetails from "../person-details/person-details";
 import SwapiService from "../../services/swapi-service";
 
 export default class App extends Component {
@@ -17,7 +17,8 @@ export default class App extends Component {
 
   state = {
     showRandomPlanet: true,
-    hasError: false
+    hasError: false,
+    image: null
   };
 
   toggleRandomPlanet = () => {
@@ -38,14 +39,39 @@ export default class App extends Component {
       return <ErrorIndicator />
     }
 
+    const {getPerson, getStarship, getPersonImage, getStarshipImage} = this.swapiService;
+
     const planet = this.state.showRandomPlanet ?
       <RandomPlanet/> :
       null;
+
+
+    const personDetails  = (
+      <PersonDetails
+       itemId={11}
+       getData={getPerson}
+       getImageUrl={getPersonImage}>
+       <Record field="gender" label="Gender" />
+       <Record field="eyeColor" label="eyeColor" /> 
+      </PersonDetails>
+    );
+
+    const starshipDetails = (
+      <PersonDetails 
+       itemId={5} 
+       getData={getStarship}
+       getImageUrl={getStarshipImage}>
+       <Record field="model" label="Model" />
+       <Record field="length" label="Length" />
+       <Record field="constInCrediets" label="Const" />
+      </PersonDetails> 
+    );
 
     return (
       <div className="stardb-app">
         <Header />
         { planet }
+
 
         <div className="row mb2 button-row">
           <button
@@ -57,7 +83,7 @@ export default class App extends Component {
         </div>
 
         <PeoplePage />
-
+        <Row left={personDetails} right={starshipDetails} />
       </div>
     );
   }
